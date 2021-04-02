@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DefautController!{% endblock %}
+
+{% block body %}
+{{ liste.nom }}
+    {% for question in liste.questions %}<br>
+    {{ question.reponse }} <br>
+    {% endfor %}
+
+{% endblock %}
+
+
+
