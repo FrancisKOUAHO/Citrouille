@@ -12,12 +12,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefautController extends AbstractController
 {
     /**
-     * @Route("/", name="Accueil")
+     * @Route("/", name="accueil")
      */
 
     public function Accueil(): Response
     {
         return $this->render('Defaut/Accueil.html.twig', [
+            'controller_name' => 'DefautController',
+        ]);
+    }
+
+    /**
+     * @Route("/question", name="question")
+     */
+
+    public function Question(): Response
+    {
+        return $this->render('Defaut/Question.html.twig', [
             'controller_name' => 'DefautController',
         ]);
     }
@@ -31,18 +42,21 @@ class DefautController extends AbstractController
     {
         return $this->render('Defaut/Liste.html.twig', [
             'controller_name' => 'DefautController',
+            'liste' => $liste
         ]);
     }
 
     /**
-     * @Route("/jeux", name="Jeux")
+     * @Route("/admin", name="admin")
      */
 
-    public function Jeux(): Response
+    public function Admin(): Response
     {
-        return $this->render('Defaut/Jeux.html.twig', [
+        return $this->render('Defaut/Admin.html.twig', [
             'controller_name' => 'DefautController',
         ]);
     }
+
+
 
 }
