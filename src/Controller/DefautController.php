@@ -27,11 +27,21 @@ class DefautController extends AbstractController
      * @Route("/liste/{id}", name="liste")
      */
 
-    public function liste(Liste $liste): Response
+    public function Liste(Liste $liste): Response
     {
         return $this->render('Defaut/Liste.html.twig', [
             'controller_name' => 'DefautController',
-            'liste'=>$liste
+        ]);
+    }
+
+    /**
+     * @Route("/jeux", name="Jeux")
+     */
+
+    public function Jeux(): Response
+    {
+        return $this->render('Defaut/Jeux.html.twig', [
+            'controller_name' => 'DefautController',
         ]);
     }
 

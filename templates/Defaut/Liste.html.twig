@@ -3,10 +3,24 @@
 {% block title %}Hello DefautController!{% endblock %}
 
 {% block body %}
-{{ liste.nom }}
-    {% for question in liste.questions %}<br>
-    {{ question.reponse }} <br>
-    {% endfor %}
+
+    <div class="jumbotron" style="margin-top: 10%">
+        <h1 class="display-3">Bonjour le monde!</h1>
+        <p class="lead">Voila la {{ liste.nom }} des motes</p>
+        <hr class="my-4">
+
+        <ul class="list-group">
+            {% for question in liste.questions %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ question.reponse }}
+                    <span class="badge badge-primary badge-pill"> {{ question.id }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="lead" style="margin-top: 5%">
+            <a class="btn btn-primary btn-lg" href="#" role="button">Apprendre encore plus</a>
+        </p>
+    </div>
 
 {% endblock %}
 
