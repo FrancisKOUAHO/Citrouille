@@ -32,7 +32,7 @@ class DefautController extends AbstractController
 
 
     /**
-     * @Route("/login", name="login")
+     * @Route("/", name="login")
      */
     public function login(Request $request, ProfesseurRepository $professeurRepository, SessionInterface $session): Response
     {
@@ -45,10 +45,10 @@ class DefautController extends AbstractController
                 $session->set('idProf', $prof->getId());
                 $session->set('nom', $prof->getNom());
                 $session->set('prenom', $prof->getPrenom());
-
+                return $this->redirectToRoute('admin');
             }
         }
-        return $this->render('Defaut/login.html.twig', [
+        return $this->render('Defaut/Accueil.html.twig', [
             'controller_name' => 'DefautController',
 
         ]);
@@ -147,11 +147,19 @@ class DefautController extends AbstractController
 
         }
 
-
-
         die();
     }
 
+
+    /**
+     * @Route("/admin", name="admin")
+     */
+    public function admin(): Response
+    {
+        return $this->render('Defaut/Admin.html.twig', [
+            'controller_name' => 'DefautController',
+        ]);
+    }
 
 
 

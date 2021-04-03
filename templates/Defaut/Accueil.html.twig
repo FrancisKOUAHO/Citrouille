@@ -9,41 +9,45 @@
     <title>Accueil</title>
 </head>
 <body>
-<div class="login-card">
-    <div class="login-card-content">
-        <div class="header">
-            <div class="logo">
-                <div><img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="200"></div>
-            </div>
-            <h2><span class="highlight">Citrouille</span></h2>
-            <h3>Apprendre c'est cool 😁😁😁</h3>
-        </div>
-        <div class="form">
-            <div class="form-field username">
-                <div class="icon">
-                    <i class="far fa-user"></i>
+<form action="{{ path('login') }}" method="post">
+    <div class="login-card">
+        <div class="login-card-content">
+            <div class="header">
+                <div class="logo">
+                    <div><img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="200"></div>
                 </div>
-                <input type="text" placeholder="Username">
+                <center>
+                    <h2><span class="highlight">Citrouille</span></h2>
+                    <h3 style="color: #fdc654">😁😁😁</h3>
+                </center>
             </div>
-            <div class="form-field password">
-                <div class="icon">
-                    <i class="fas fa-lock"></i>
+            <div class="form">
+                <div class="form-field username">
+                    <div class="icon">
+                        <i class="far fa-user"></i>
+                    </div>
+                    <input type="text" placeholder="Nom d'utilisateur" name="login">
                 </div>
-                <input type="password" placeholder="Password">
-            </div>
+                <div class="form-field password">
+                    <div class="icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" placeholder="Mot de passe" name="motDePasse">
+                </div>
 
-            <button type="submit">
-                Connexion
-            </button>
-            <div>
-                Vous n'avez pas de compte? <a href="">S'inscrire maintenant</a>
+                <button type="submit">
+                    Connexion
+                </button>
+                <div>
+                    Vous n'avez pas de compte? <a href="">S'inscrire maintenant</a>
+                </div>
             </div>
         </div>
+        <div class="login-card-footer">
+            <a href="">Mot de passe oublié?</a>
+        </div>
     </div>
-    <div class="login-card-footer">
-        <a href="">Mot de passe oublié?</a>
-    </div>
-</div>
+</form>
 <script>
     document.getElementsByTagName("h1")[0].style.fontSize = "80px";
 </script>
