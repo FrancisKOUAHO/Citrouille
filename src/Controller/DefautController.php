@@ -19,14 +19,13 @@ use ZipArchive;
 class DefautController extends AbstractController
 {
     /**
- * @Route("/liste/{id}", name="liste")
- */
+     * @Route("/liste/{id}", name="liste")
+     */
     public function index(Liste $liste): Response
     {
-        return $this->render('defaut/index.html.twig', [
+        return $this->render('Defaut/Liste.html.twig', [
             'controller_name' => 'DefautController',
             'liste'=>$liste
-
         ]);
     }
 
@@ -54,7 +53,7 @@ class DefautController extends AbstractController
         ]);
     }
     /**
-     * @Route("/liste/create", name="liste")
+     * @Route("/liste/create", name="listeCreate")
      */
     public function createList(SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository): Response
     {
