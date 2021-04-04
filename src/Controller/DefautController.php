@@ -94,7 +94,6 @@ class DefautController extends AbstractController
         }
         $text.='}';
 
-
         /*header("Content-type: application/$extension");
         header("Content-Disposition: attachment; filename=" . $video->getTitre().".".$extension);
         header("Pragma: no-cache");
@@ -109,7 +108,6 @@ class DefautController extends AbstractController
     public function importListe(Request $request, ZipArchive $zipArchive,SessionInterface $session,EntityManagerInterface $manager): Response
     {
         $zipUrl = $request->files->get('video')['fichier'];
-
         $zip =$zipArchive->open($zipUrl);
 
         while ($zip_entry = zip_read($zip)) {
@@ -147,6 +145,16 @@ class DefautController extends AbstractController
         }
 
         die();
+    }
+
+    /**
+     * @Route("/question", name="Question")
+     */
+    public function question(): Response
+    {
+        return $this->render('Defaut/Question.html.twig', [
+            'controller_name' => 'DefautController',
+        ]);
     }
 
 
