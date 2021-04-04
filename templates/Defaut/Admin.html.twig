@@ -93,6 +93,69 @@
     }
 
 
+    button { outline: none; }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    .download-button:active { background: #A21B00; }
+    .import-button:active { background: #5D5D5D; }
+
+    .download-button {
+        float: left;
+        margin-left: 0;
+        margin-right: -2px;
+        width: 190px;
+        height: 50px;
+        border: none;
+        border-right: 2px solid white;
+        border-radius: 5px 0 0 5px;
+        font-size: 16px;
+        color: white;
+        background: #D12200;
+    }
+
+    .import-button {
+        float: left;
+        margin-left: -2px;
+        width: 190px;
+        height: 50px;
+        border: none;
+        border-left: 2px solid white;
+        border-radius: 0 5px 5px 0;
+        font-size: 16px;
+        color: white;
+        background: #7E7E7F;
+    }
+
+    #area {
+        position: relative;
+    }
+
+    #area p {
+        position: absolute;
+        top: -5px; /* Magic number? :( */
+        left: 173px;
+        background: #282829;
+        line-height: 25px;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        border: 2px solid white;
+        font-size: 15px;
+    }
+
+    #file {
+        background: url(https://eu.static.mega.co.nz/images/extension/rar.png) no-repeat;
+        text-indent: 30px;
+    }
+
+    .clear { clear: both; }
+
+
 </style>
 <svg style="display:none;">
     <symbol id="logo" viewBox="0 0 140 59">
@@ -245,7 +308,7 @@
             </button>
         </form>
         <div class="admin-profile">
-            <span class="greeting">Hello admin</span>
+            <span class="greeting">Hello Francis</span>
             <div class="notifications">
                 <span class="badge">1</span>
                 <svg>
@@ -257,11 +320,30 @@
     <section class="grid">
         <article>
 
+            <div style="margin-top: 10%; margin-left: 30%">
+                <div id="area">
+                    <button class="download-button" style="background-color: #25c482;;">Exporter</button>
+                    <button class="import-button">Importer</button>
+                    <p>or</p>
+                </div>
+                <div class="clear"></div>
+                <p>
+                    <br>
 
+                    <center>
+                        <label for="terms">
+                            Je ne suis pas d'accord avec Citrouille
+                        </label>
+                    </center>
+
+                </p>
+            </div>
         </article>
+
             <div style="margin-left: 89%">
                 <h1>Resultat</h1>
             </div>
+
         <article>
 
             <table class="container">
