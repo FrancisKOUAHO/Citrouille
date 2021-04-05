@@ -128,18 +128,22 @@ class DefautController extends AbstractController
                 }
 
             }
+            return $this->redirectToRoute('DisplayListe');
         }
         $questions = $questionRepository->findAll();
 
 
-        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions()]);
+        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId()]);
     }
 
     /**
      * @Route("/export/liste/{id}", name="export")
      */
-    public function exportListe(Liste $liste): Response
+    public function exportListe(Liste $liste, SessionInterface  $session): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         $text = '{ "nom":"'.$liste->getNom().'", "questions":[';
         $zipArchive = new ZipArchive();
         $time=strtotime('now');
@@ -173,6 +177,9 @@ class DefautController extends AbstractController
      */
     public function importListe(Request $request, SessionInterface $session,EntityManagerInterface $manager, ProfesseurRepository $professeurRepository): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         $zipUrl = $request->files->get('file');
 
         if($zipUrl) {
@@ -182,9 +189,7 @@ class DefautController extends AbstractController
 
             $res =file_get_contents('uploads/export.json', true);
             $data = json_decode($res);
-            echo '<pre>';
-            print_r($data);
-            echo '</pre>';
+
 
 
             $liste = new Liste();
@@ -231,6 +236,9 @@ class DefautController extends AbstractController
      */
     public function admin(SessionInterface $session): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         return $this->render('Defaut/Admin.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom')
@@ -242,6 +250,9 @@ class DefautController extends AbstractController
      */
     public function DisplayListe(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         $prof = $professeurRepository->find($session->get('idProf'));
         return $this->render('Defaut/DisplayListe.html.twig', [
             'controller_name' => 'DefautController',
@@ -252,24 +263,30 @@ class DefautController extends AbstractController
 
 
     /**
-     * @Route("/Utilisateur", name="Utilisateur")
+     * @Route("/professeurs", name="Professeurs")
      */
-    public function Utilisateur(SessionInterface $session): Response
+    public function Utilisateur(SessionInterface $session, ProfesseurRepository $professeurRepository): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         return $this->render('Defaut/Utilisateur.html.twig', [
             'controller_name' => 'DefautController',
-            'nom'=>$session->get('nom')." ".$session->get('prenom'),
+            'professeurs'=>$professeurRepository->findAll()
         ]);
     }
 
     /**
-     * @Route("/Mots", name="Mots")
+     * @Route("/mots", name="Mots")
      */
-    public function Mots(SessionInterface $session): Response
+    public function Mots(SessionInterface $session, QuestionRepository $questionRepository): Response
     {
+        if ($session->get('idProf') == null) {
+            return $this->redirectToRoute('login');
+        }
         return $this->render('Defaut/Mots.html.twig', [
             'controller_name' => 'DefautController',
-            'nom'=>$session->get('nom')." ".$session->get('prenom'),
+            'mots'=>$questionRepository->findAll()
         ]);
     }
 
