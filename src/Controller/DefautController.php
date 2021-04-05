@@ -84,41 +84,43 @@ class DefautController extends AbstractController
                 for ($i = 0; $i < $nb; $i++) {
                     $questionform = $request->request->get("question$i");
                     $questionfiles = $request->files->get("question$i");
-                    $question = new Question();
-                    $question->setReponse($questionform["reponse"]);
-                    $manager->persist($question);
-                    $manager->flush();
-                    $id = strtotime('now');
-                    if (isset($questionfiles["image"])) {
-                        $image = $questionfiles['image'];
-                        $nom = $id."." . $image->guessExtension();
-                        try {
-                            $image->move(
-                               'uploads/images/',
-                                $nom
-                            );
-                            $question->setUrlImage("uploads/images/$nom");
-                        } catch (FileException $e) {
-                            return 'error image';
+                    if($questionform["reponse"]!=null) {
+                        $question = new Question();
+                        $question->setReponse($questionform["reponse"]);
+                        $manager->persist($question);
+                        $manager->flush();
+                        $id = strtotime('now');
+                        if (isset($questionfiles["image"])) {
+                            $image = $questionfiles['image'];
+                            $nom = $id . "." . $image->guessExtension();
+                            try {
+                                $image->move(
+                                    'uploads/images/',
+                                    $nom
+                                );
+                                $question->setUrlImage("uploads/images/$nom");
+                            } catch (FileException $e) {
+                                return 'error image';
+                            }
                         }
-                    }
-                    if (isset($questionfiles["audio"])) {
-                        $audio = $questionfiles['audio'];
-                        $nom =  $id."."  . $audio->guessExtension();
-                        try {
-                            $audio->move(
-                                'uploads/audios/',
-                                $nom
-                            );
-                            $question->setUrlAudio("uploads/audios/$nom");
-                        } catch (FileException $e) {
-                            return 'error image';
+                        if (isset($questionfiles["audio"])) {
+                            $audio = $questionfiles['audio'];
+                            $nom = $id . "." . $audio->guessExtension();
+                            try {
+                                $audio->move(
+                                    'uploads/audios/',
+                                    $nom
+                                );
+                                $question->setUrlAudio("uploads/audios/$nom");
+                            } catch (FileException $e) {
+                                return 'error image';
+                            }
                         }
+                        $manager->persist($question);
+                        $liste->addQuestion($question);
+                        $manager->persist($liste);
+                        $manager->flush();
                     }
-                    $manager->persist($question);
-                    $liste->addQuestion($question);
-                    $manager->persist($liste);
-                    $manager->flush();
                 }
                 $q = $request->request->get('q');
                 foreach ($q as $question){
@@ -128,12 +130,12 @@ class DefautController extends AbstractController
                 }
 
             }
-            return $this->redirectToRoute('DisplayListe');
+            return $this->redirectToRoute('MesListes');
         }
         $questions = $questionRepository->findAll();
 
 
-        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
+        return $this->render('Defaut/CreateModifListe.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
     }
 
     /**
@@ -246,15 +248,15 @@ class DefautController extends AbstractController
     }
 
     /**
-     * @Route("/DisplayListe", name="DisplayListe")
+     * @Route("/MesListes", name="MesListes")
      */
-    public function DisplayListe(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
+    public function MesListes(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
     {
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
         $prof = $professeurRepository->find($session->get('idProf'));
-        return $this->render('Defaut/DisplayListe.html.twig', [
+        return $this->render('Defaut/MesListes.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'listes'=>$listeRepository->findBy(['createur'=>$prof])
@@ -270,7 +272,7 @@ class DefautController extends AbstractController
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        return $this->render('Defaut/Utilisateur.html.twig', [
+        return $this->render('Defaut/Utilisateurs.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'professeurs'=>$professeurRepository->findAll()
@@ -285,7 +287,7 @@ class DefautController extends AbstractController
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        return $this->render('Defaut/Mots.html.twig', [
+        return $this->render('Defaut/ListeMots.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'mots'=>$questionRepository->findAll()
