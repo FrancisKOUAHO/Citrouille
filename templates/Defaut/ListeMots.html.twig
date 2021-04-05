@@ -12,33 +12,6 @@
 <body>
 <style>
 
-    .button-success {
-        color: white;
-        border-radius: 4px;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-        width: 250px;
-        height: 50px;
-    }
-
-    .button-success {
-        background: #26c481;
-
-    }
-
-    .text-form {
-        font-size: 20px
-    }
-    .myInput {
-        background-image: url('/css/searchicon.png'); /* Add a search icon to input */
-        background-position: 10px 12px; /* Position the search icon */
-        background-repeat: no-repeat; /* Do not repeat the icon image */
-        width: 100%; /* Full-width */
-        font-size: 16px; /* Increase font-size */
-        padding: 12px 20px 12px 40px; /* Add some padding */
-        border: 1px solid #ddd; /* Add a grey border */
-        margin-bottom: 12px; /* Add some space below the input */
-    }
-
     h1 {
         font-size: 3em;
         font-weight: 300;
@@ -203,31 +176,6 @@
         clear: both;
     }
 
-    /* The alert message box */
-    .alert {
-        padding: 20px;
-        background-color: #fb465d; /* Red */
-        color: white;
-        margin-bottom: 15px;
-    }
-
-    /* The close button */
-    .closebtn {
-        margin-left: 15px;
-        color: white;
-        font-weight: bold;
-        float: right;
-        font-size: 22px;
-        line-height: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    /* When moving the mouse over the close button */
-    .closebtn:hover {
-        color: black;
-    }
-
 
 </style>
 
@@ -293,14 +241,14 @@
 </svg>
 <header class="page-header">
     <nav>
-        <center>
-            <a href="#0" aria-label="forecastr logo" class="logo">
-                <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
-                <div>
-                    <span style="color: white">Cirouille</span>
-                </div>
-            </a>
-        </center>
+       <center>
+           <a href="#0" aria-label="forecastr logo" class="logo">
+               <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
+               <div>
+                   <span style="color: white">Cirouille</span>
+               </div>
+           </a>
+       </center>
         <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
             <svg width="20" height="20" aria-hidden="true">
                 <use xlink:href="#down"></use>
@@ -319,7 +267,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('DisplayListe') }}">
+                <a href="{{ path('MesListes') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
@@ -381,6 +329,7 @@
         <div class="admin-profile">
             <span class="greeting">Bonjour {{ nom }}</span>
             <div class="notifications">
+                <span class="badge">1</span>
                 <svg>
                     <use xlink:href="#users"></use>
                 </svg>
@@ -389,115 +338,27 @@
     </section>
     <section class="grid">
         <article>
-
-            {{ form_start(formListe, {'attr':{'id':'formListe', 'enctype':"multipart/form-data"}, 'action':path('listeCreate') }) }}
-            {{ form_row (formListe.nom, {'attr': {'class': 'myInput'}}) }}
-
-            <input type="hidden" id="nbQuestions" name="nbQuestions">
-            <input type="hidden" id="nbQuestionsAncienne" name="nbQuestionsAncienne">
-            <table id="tableQuestions" class="container" style="width:    150% !important;">
+            <table class="container">
                 <tr>
-                    <th>Réponse</th>
+                    <th>Reponse</th>
                     <th>Image</th>
                     <th>Audio</th>
                 </tr>
+                {% for mot in mots %}
                 <tr>
-                    <td colspan="3">
-                        <button type="button" onclick="addQuestion()" class="text-form">Ajouter une question</button>
-                    </td>
+                    <td>{{ mot.reponse }}</td>
+                    <td>{{ mot.urlImage?"oui" : "non" }}</td>
+                    <td>{{ mot.urlAudio?"oui" : "non" }}</td>
                 </tr>
-                <tr id="copy" style="display: none">
-                    <td><input type="text" id="reponse"></td>
-                    <td><input type="file" id="image"></td>
-                    <td><input type="file" id="audio"></td>
-                </tr>
-            </table>
-
-            <div style="margin-left: 500px; margin-top: 0%;">
-                <button type="submit" class="button-success pure-button">Valider</button>
-            </div>
-
-
-            <table id="motPris" class="container" style="margin-top: 52%; width: 151%;">
-                {% for question in questionsPrise %}
-                    <tr id="tr{{ question.id }}" class="text-form tr">
-                        <td >
-                            <button onclick="move({{ question.id }})" type="button"><img
-                                        src="{{ asset('img/left-arrow.png') }}" alt="fleche" width="40" id="img{{ question.id }}"></button>
-                        </td>
-                        <td id="td"><a>{{ question.reponse }}</a><input type="hidden" name="q[]" value="{{ question.id }}" class="text-form">
-                        </td>
-                    </tr>
                 {% endfor %}
             </table>
-            {{ form_end(formListe) }}
         </article>
-        <div>
-            <article>
-                <div style="width: 150%; margin-top: 20%;">
-                    <input type="text" class="myInput" id="myInput" onkeyup="searchWord()" placeholder="Rechercher des mots...">
-                </div>
-                <table id="motLibre" class="container" style="width: 150%;">
-                    {% for question in questions %}
-                        <tr id="tr{{ question.id }}" class="tr">
-                            <td>
-                                <button onclick="move({{ question.id }})" type="button"><img
-                                            src="{{ asset('img/right-arrow.png') }}" alt="fleche" width="40" id="img{{ question.id }}"></button>
-                            </td>
-                            <td><a>{{ question.reponse }}</a><input type="hidden" name="q[]" value="{{ question.id }}"></td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </article>
-        </div>
 
     </section>
 </section>
 
 <script src="{{ asset('js/style.js') }}"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    var i = 0;
-
-    function addQuestion() {
-        var tr = $('#copy').clone();
-        tr.show();
-        tr.find('#reponse').attr('name', "question" + i + "[reponse]");
-        tr.find('#image').attr('name', "question" + i + "[image]");
-        tr.find('#audio').attr('name', "question" + i + "[audio]");
-        tr.appendTo('#tableQuestions');
-        i++;
-        $('#nbQuestions').val(i);
-    }
-
-    function move(id) {
-        var tr = $('#tr' + id);
-        var src =  $('#img'+id).attr('src');
-
-        //$('#tr' + id + ' td:first-child').appendTo(tr);
-
-        if (tr.parent().parent().attr('id') === 'motLibre') {
-            tr.appendTo('#motPris');
-            $('#img'+id).attr('src',src.replaceAll('left','right'));
-        } else if (tr.parent().parent().attr('id') === 'motPris') {
-            tr.appendTo('#motLibre');
-            $('#img'+id).attr('src',src.replaceAll('right','left'));
-        }
-    }
-
-    function searchWord() {
-        // Declare variables
-        var input, filter, tr, td, a, i, txtValue;
-        input = document.getElementById('myInput');
-        filter = input.value.toUpperCase();
-        tr = document.getElementsByClassName("tr");
-        td = tr.getElementById('td');
-
-    }
-
-</script>
-
 
 </body>
 </html>
-

@@ -66,74 +66,94 @@ class DefautController extends AbstractController
         if (!$liste) {
             $liste = new Liste();
         }
+
+        $questionInListe=[];
+        foreach ( $liste->getQuestions() as $question){
+            $questionInListe[]=$question->getId();
+        }
         $formListe = $this->createForm(ListeType::class, $liste);
         $formListe->handleRequest($request);
         if ($formListe->isSubmitted()) {
             if ($formListe->isValid()) {
-                if (!$liste->getId()) {
+                if ($liste->getId() == null) {
                     $liste->setDateCreation(strtotime('now'))
                     ->setCreateur($professeurRepository->find($session->get('idProf')))
                     ->setVisibilite(0);
+                    $manager->persist($liste);
+                    $manager->flush();
                 }
 
-                $manager->persist($liste);
-                $manager->flush();
+
                 $nb = $request->request->get('nbQuestions');
-
-
                 for ($i = 0; $i < $nb; $i++) {
                     $questionform = $request->request->get("question$i");
                     $questionfiles = $request->files->get("question$i");
-                    $question = new Question();
-                    $question->setReponse($questionform["reponse"]);
-                    $manager->persist($question);
-                    $manager->flush();
-                    $id = strtotime('now');
-                    if (isset($questionfiles["image"])) {
-                        $image = $questionfiles['image'];
-                        $nom = $id."." . $image->guessExtension();
-                        try {
-                            $image->move(
-                               'uploads/images/',
-                                $nom
-                            );
-                            $question->setUrlImage("uploads/images/$nom");
-                        } catch (FileException $e) {
-                            return 'error image';
+                    if($questionform["reponse"]!=null) {
+                        $question = new Question();
+                        $question->setReponse($questionform["reponse"]);
+                        $manager->persist($question);
+                        $manager->flush();
+                        $id = strtotime('now');
+                        if (isset($questionfiles["image"])) {
+                            $image = $questionfiles['image'];
+                            $nom = $id . "." . $image->guessExtension();
+                            try {
+                                $image->move(
+                                    'uploads/images/',
+                                    $nom
+                                );
+                                $question->setUrlImage("uploads/images/$nom");
+                            } catch (FileException $e) {
+                                return 'error image';
+                            }
                         }
-                    }
-                    if (isset($questionfiles["audio"])) {
-                        $audio = $questionfiles['audio'];
-                        $nom =  $id."."  . $audio->guessExtension();
-                        try {
-                            $audio->move(
-                                'uploads/audios/',
-                                $nom
-                            );
-                            $question->setUrlAudio("uploads/audios/$nom");
-                        } catch (FileException $e) {
-                            return 'error image';
+                        if (isset($questionfiles["audio"])) {
+                            $audio = $questionfiles['audio'];
+                            $nom = $id . "." . $audio->guessExtension();
+                            try {
+                                $audio->move(
+                                    'uploads/audios/',
+                                    $nom
+                                );
+                                $question->setUrlAudio("uploads/audios/$nom");
+                            } catch (FileException $e) {
+                                return 'error image';
+                            }
                         }
+                        $manager->persist($question);
+                        $liste->addQuestion($question);
+                        $manager->persist($liste);
                     }
-                    $manager->persist($question);
-                    $liste->addQuestion($question);
-                    $manager->persist($liste);
-                    $manager->flush();
                 }
                 $q = $request->request->get('q');
+                $questionChoisies=[];
                 foreach ($q as $question){
+                    $questionChoisies[]=$question;
                     $liste->addQuestion($questionRepository->find($question));
-                    $manager->persist($liste);
-                    $manager->flush();
                 }
+                $manager->persist($liste);
+
+                $reste=array_diff($questionInListe, $questionChoisies);
+                foreach ($reste as $q){
+                    $liste->removeQuestion($questionRepository->find($q));
+                }
+                echo "<pre>";
+                var_dump($questionInListe);
+                echo "<br>";
+                var_dump($questionChoisies);
+                echo "<br>";
+                var_dump($reste);
+                echo "</pre>";
+                $manager->persist($liste);
+                $manager->flush();
 
             }
-            return $this->redirectToRoute('DisplayListe');
+            //return $this->redirectToRoute('MesListes');
         }
         $questions = $questionRepository->findAll();
 
 
-        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
+        return $this->render('Defaut/CreateModifListe.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
     }
 
     /**
@@ -246,15 +266,15 @@ class DefautController extends AbstractController
     }
 
     /**
-     * @Route("/DisplayListe", name="DisplayListe")
+     * @Route("/MesListes", name="MesListes")
      */
-    public function DisplayListe(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
+    public function MesListes(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
     {
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
         $prof = $professeurRepository->find($session->get('idProf'));
-        return $this->render('Defaut/DisplayListe.html.twig', [
+        return $this->render('Defaut/MesListes.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'listes'=>$listeRepository->findBy(['createur'=>$prof])
@@ -270,7 +290,7 @@ class DefautController extends AbstractController
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        return $this->render('Defaut/Utilisateur.html.twig', [
+        return $this->render('Defaut/Utilisateurs.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'professeurs'=>$professeurRepository->findAll()
@@ -285,7 +305,7 @@ class DefautController extends AbstractController
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        return $this->render('Defaut/Mots.html.twig', [
+        return $this->render('Defaut/ListeMots.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'mots'=>$questionRepository->findAll()

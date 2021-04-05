@@ -267,7 +267,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('DisplayListe') }}">
+                <a href="{{ path('MesListes') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
@@ -338,27 +338,38 @@
     </section>
     <section class="grid">
         <article>
-            <table class="container">
-                <tr>
-                    <th>Reponse</th>
-                    <th>Image</th>
-                    <th>Audio</th>
-                </tr>
-                {% for mot in mots %}
-                <tr>
-                    <td>{{ mot.reponse }}</td>
-                    <td>{{ mot.urlImage?"oui" : "non" }}</td>
-                    <td>{{ mot.urlAudio?"oui" : "non" }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+            <article>
+                <table class="container" style="width: 100%">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Nombre de liste</th>
+                    </tr>
+                    {% for professeur in professeurs %}
+                        <tr>
+                            <td>{{ professeur.nom }}</td>
+                            <td>{{ professeur.prenom }}</td>
+                            <td>{{ professeur.listes|length }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </article>
         </article>
-
     </section>
 </section>
 
 <script src="{{ asset('js/style.js') }}"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $.ajax({
+        type: "POST",
+        url: "{{ path('listeCreate') }}",
+        success: function (html) {
+            $('#create').html(html)
+        },
+        dataType: "html"
+    });
+</script>
 
 </body>
 </html>
