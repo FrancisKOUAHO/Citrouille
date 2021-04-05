@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -240,14 +240,14 @@
 </svg>
 <header class="page-header">
     <nav>
-       <center>
-           <a href="#0" aria-label="forecastr logo" class="logo">
-               <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
-               <div>
-                   <span style="color: white">Cirouille</span>
-               </div>
-           </a>
-       </center>
+        <center>
+            <a href="#0" aria-label="forecastr logo" class="logo">
+                <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
+                <div>
+                    <span style="color: white">Cirouille</span>
+                </div>
+            </a>
+        </center>
         <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
             <svg width="20" height="20" aria-hidden="true">
                 <use xlink:href="#down"></use>
@@ -266,7 +266,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('DisplayListe') }}">
+                <a href="#0">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
@@ -320,57 +320,26 @@
         </div>
     </section>
     <section class="grid">
-        <div id="create">
-
-
-
-        </div>
-        <article style="margin-top: 136%; width: 204%; margin-left: -105%;">
-            <div style="margin-top: 13%; margin-left: 34%;">
-                <div id="area">
-                    <button class="download-button" style="background-color: #25c482;;">Exporter</button>
-                    <button class="import-button">Importer</button>
-                    <p>or</p>
-                </div>
-                <div class="clear"></div>
-                <p>
-                    <br>
-
-                <center>
-                    <label for="terms">
-                        Je ne suis pas d'accord avec Citrouille
-                    </label>
-                </center>
-
-                </p>
-            </div>
-        </article>
-
-
         <article>
 
             <table class="container">
                 <thead>
                 <tr>
-                    <th><h1>Utilisateur</h1></th>
-                    <th><h1>Classe</h1></th>
-                    <th><h1>Niveau</h1></th>
-                    <th><h1>Score</h1></th>
+                    <th><h1>Nom</h1></th>
+                    <th><h1>Nombre questions</h1></th>
+                    <th><h1>Modifier</h1></th>
+                    <th><h1>Exporter</h1></th>
                 </tr>
                 </thead>
                 <tbody>
+                {% for liste in listes %}
                 <tr>
-                    <td>Francis</td>
-                    <td>CM2</td>
+                    <td>{{ liste.nom }}</td>
+                    <td>{{ liste.questions|length }}</td>
                     <td>2</td>
-                    <td>4</td>
+                    <td><a href="{{ path('export')}}?id={{ liste.id }}"></a></td>
                 </tr>
-                <tr>
-                    <td>Noah</td>
-                    <td>CP</td>
-                    <td>4</td>
-                    <td>6</td>
-                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </article>

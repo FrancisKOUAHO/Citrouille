@@ -226,7 +226,16 @@ class DefautController extends AbstractController
         ]);
     }
 
-
+    /**
+     * @Route("/DisplayListe", name="DisplayListe")
+     */
+    public function DisplayListe(SessionInterface $session): Response
+    {
+        return $this->render('Defaut/DisplayListe.html.twig', [
+            'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom')
+        ]);
+    }
 
 
 }
