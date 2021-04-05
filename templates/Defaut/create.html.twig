@@ -1,0 +1,35 @@
+{{ form_start(formListe, {'attr':{'id':'formListe'}, 'action':path('listeCreate') }) }}
+<input type="hidden" name="nbQuestions">
+<table id="tableQuestions">
+    <tr>
+        <th>Réponse</th>
+        <th>Image</th>
+        <th>Audio</th>
+    </tr>
+    <tr>
+        <td colspan="2"><button type="button" onclick="addQuestion()">Ajouter une question</button>
+        </td>
+    </tr>
+    <tr id="copy" style="display: none">
+        <td><input type="text" id="reponse"></td>
+        <td><input type="file" id="image"> </td>
+        <td><input type="file" id="audio"> </td>
+    </tr>
+</table>
+
+{{ form_end(formListe) }}
+
+
+<script>
+    var i=0;
+    function addQuestion(){
+        var tr = $('#copy').clone();
+        tr.show();
+        tr.find('#reponse').attr('name',"question"+i+"[reponse]");
+        tr.find('#image').attr('name',"question"+i+"[image]");
+        tr.find('#audio').attr('name',"question"+i+"[audio]");
+        tr.appendTo('#tableQuestions');
+        i++;
+        $('#nbQuestions').val(i)
+    }
+</script>

@@ -169,6 +169,8 @@
         text-indent: 30px;
     }
 
+
+
     .clear {
         clear: both;
     }
@@ -308,7 +310,7 @@
             </button>
         </form>
         <div class="admin-profile">
-            <span class="greeting">Hello Francis</span>
+            <span class="greeting">Bonjour {{ nom }}</span>
             <div class="notifications">
                 <span class="badge">1</span>
                 <svg>
@@ -318,7 +320,7 @@
         </div>
     </section>
     <section class="grid">
-        <article>
+        <article id="create">
 
         </article>
 
@@ -375,6 +377,17 @@
 </section>
 
 <script src="{{ asset('js/style.js') }}"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $.ajax({
+        type: "POST",
+        url: "{{ path('listeCreate') }}",
+        success: function (html) {
+            $('#create').html(html)
+        },
+        dataType: "html"
+    });
+</script>
 
 </body>
 </html>

@@ -53,19 +53,24 @@ class DefautController extends AbstractController
         ]);
     }
     /**
-     * @Route("/liste/create", name="listeCreate")
+     * @Route("create/liste", name="listeCreate")
+     * @Route("edit/liste/{id}", name="listeEdit")
      */
-    public function createList(SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository): Response
+    public function createList(Liste $liste=null,SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository): Response
     {
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        $questions = $questionRepository->findAll();
-        $liste = new Liste();
+        if(!$liste) {
+            $liste = new Liste();
+            }
         $formListe = $this->createForm(ListeType::class, $liste);
         $formListe->handleRequest($request);
         if($formListe->isSubmitted()){
             if ( $formListe->isValid()) {
+               if(!$liste->getId()){
+                   $liste->setDateCreation(strtotime('now'));
+               }
                $manager->persist($liste);
                $manager->flush();
             }
@@ -74,7 +79,9 @@ class DefautController extends AbstractController
             }
             die();
         }
-        return $this->render('Defaut/create.html.twig', ['formVideo' => $formListe->createView(), 'questions'=>$questions]);
+        $questions = $questionRepository->findAll();
+
+        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions]);
     }
 
     /**
@@ -161,10 +168,11 @@ class DefautController extends AbstractController
     /**
      * @Route("/admin", name="admin")
      */
-    public function admin(): Response
+    public function admin(SessionInterface $session): Response
     {
         return $this->render('Defaut/Admin.html.twig', [
             'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom')
         ]);
     }
 
