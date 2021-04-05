@@ -9,6 +9,7 @@ use App\Repository\ProfesseurRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -56,32 +57,81 @@ class DefautController extends AbstractController
      * @Route("create/liste", name="listeCreate")
      * @Route("edit/liste/{id}", name="listeEdit")
      */
-    public function createList(Liste $liste=null,SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository): Response
+    public function createList(Liste $liste=null,SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository, ProfesseurRepository $professeurRepository): Response
     {
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        if(!$liste) {
+        if (!$liste) {
             $liste = new Liste();
-            }
+        }
         $formListe = $this->createForm(ListeType::class, $liste);
         $formListe->handleRequest($request);
-        if($formListe->isSubmitted()){
-            if ( $formListe->isValid()) {
-               if(!$liste->getId()){
-                   $liste->setDateCreation(strtotime('now'));
-               }
-               $manager->persist($liste);
-               $manager->flush();
+        if ($formListe->isSubmitted()) {
+            if ($formListe->isValid()) {
+                if (!$liste->getId()) {
+                    $liste->setDateCreation(strtotime('now'))
+                    ->setCreateur($professeurRepository->find($session->get('idProf')))
+                    ->setVisibilite(0);
+                }
+
+                $manager->persist($liste);
+                $manager->flush();
+                $nb = $request->request->get('nbQuestions');
+
+
+                for ($i = 0; $i < $nb; $i++) {
+                    $questionform = $request->request->get("question$i");
+                    $questionfiles = $request->files->get("question$i");
+                    $question = new Question();
+                    $question->setReponse($questionform["reponse"]);
+                    $manager->persist($question);
+                    $manager->flush();
+                    if (isset($questionfiles["image"])) {
+                        $image = $questionfiles['image'];
+
+                        $nom = $question->getId()."." . $image->guessExtension();
+                        try {
+                            $image->move(
+                               'uploads/images/',
+                                $nom
+                            );
+                            $question->setUrlImage("uploads/images/$nom");
+                        } catch (FileException $e) {
+                            return 'error image';
+                        }
+                    }
+                    if (isset($questionfiles["audio"])) {
+                        $audio = $questionfiles['audio'];
+                        $nom =  $question->getId()."."  . $audio->guessExtension();
+                        try {
+                            $audio->move(
+                                'uploads/audios/',
+                                $nom
+                            );
+                            $question->setUrlAudio("uploads/audios/$nom");
+                        } catch (FileException $e) {
+                            return 'error image';
+                        }
+                    }
+                    $manager->persist($question);
+                    $liste->addQuestion($question);
+                    $manager->persist($liste);
+                    $manager->flush();
+                }
+                $q = $request->request->get('q');
+                foreach ($q as $question){
+                    $liste->addQuestion($questionRepository->find($question));
+                    $manager->persist($liste);
+                    $manager->flush();
+                }
+
             }
-            else{
-                echo "error format invalide";
-            }
-            die();
         }
         $questions = $questionRepository->findAll();
 
-        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions]);
+
+        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions()]);
     }
 
     /**
