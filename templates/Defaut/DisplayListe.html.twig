@@ -337,7 +337,7 @@
                     <td>{{ liste.nom }}</td>
                     <td>{{ liste.questions|length }}</td>
                     <td>2</td>
-                    <td><a href="{{ path('export')}}?id={{ liste.id }}"></a></td>
+                    <td><a href="{{ path('export', {'id':liste.id})}}">aa</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
