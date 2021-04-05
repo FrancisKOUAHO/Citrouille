@@ -272,6 +272,7 @@ class DefautController extends AbstractController
         }
         return $this->render('Defaut/Utilisateur.html.twig', [
             'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'professeurs'=>$professeurRepository->findAll()
         ]);
     }
@@ -286,6 +287,7 @@ class DefautController extends AbstractController
         }
         return $this->render('Defaut/Mots.html.twig', [
             'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'mots'=>$questionRepository->findAll()
         ]);
     }
