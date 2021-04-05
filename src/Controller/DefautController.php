@@ -66,21 +66,25 @@ class DefautController extends AbstractController
         if (!$liste) {
             $liste = new Liste();
         }
+
+        $questionInListe=[];
+        foreach ( $liste->getQuestions() as $question){
+            $questionInListe[]=$question->getId();
+        }
         $formListe = $this->createForm(ListeType::class, $liste);
         $formListe->handleRequest($request);
         if ($formListe->isSubmitted()) {
             if ($formListe->isValid()) {
-                if (!$liste->getId()) {
+                if ($liste->getId() == null) {
                     $liste->setDateCreation(strtotime('now'))
                     ->setCreateur($professeurRepository->find($session->get('idProf')))
                     ->setVisibilite(0);
+                    $manager->persist($liste);
+                    $manager->flush();
                 }
 
-                $manager->persist($liste);
-                $manager->flush();
+
                 $nb = $request->request->get('nbQuestions');
-
-
                 for ($i = 0; $i < $nb; $i++) {
                     $questionform = $request->request->get("question$i");
                     $questionfiles = $request->files->get("question$i");
@@ -119,18 +123,32 @@ class DefautController extends AbstractController
                         $manager->persist($question);
                         $liste->addQuestion($question);
                         $manager->persist($liste);
-                        $manager->flush();
                     }
                 }
                 $q = $request->request->get('q');
+                $questionChoisies=[];
                 foreach ($q as $question){
+                    $questionChoisies[]=$question;
                     $liste->addQuestion($questionRepository->find($question));
-                    $manager->persist($liste);
-                    $manager->flush();
                 }
+                $manager->persist($liste);
+
+                $reste=array_diff($questionInListe, $questionChoisies);
+                foreach ($reste as $q){
+                    $liste->removeQuestion($questionRepository->find($q));
+                }
+                echo "<pre>";
+                var_dump($questionInListe);
+                echo "<br>";
+                var_dump($questionChoisies);
+                echo "<br>";
+                var_dump($reste);
+                echo "</pre>";
+                $manager->persist($liste);
+                $manager->flush();
 
             }
-            return $this->redirectToRoute('MesListes');
+            //return $this->redirectToRoute('MesListes');
         }
         $questions = $questionRepository->findAll();
 
