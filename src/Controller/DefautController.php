@@ -127,28 +127,23 @@ class DefautController extends AbstractController
                 }
                 $q = $request->request->get('q');
                 $questionChoisies=[];
-                foreach ($q as $question){
-                    $questionChoisies[]=$question;
-                    $liste->addQuestion($questionRepository->find($question));
+                if($q != null) {
+                    foreach ($q as $question) {
+                        $questionChoisies[] = $question;
+                        $liste->addQuestion($questionRepository->find($question));
+                    }
+                    $manager->persist($liste);
                 }
-                $manager->persist($liste);
-
                 $reste=array_diff($questionInListe, $questionChoisies);
                 foreach ($reste as $q){
                     $liste->removeQuestion($questionRepository->find($q));
                 }
-                echo "<pre>";
-                var_dump($questionInListe);
-                echo "<br>";
-                var_dump($questionChoisies);
-                echo "<br>";
-                var_dump($reste);
-                echo "</pre>";
+
                 $manager->persist($liste);
                 $manager->flush();
 
             }
-            //return $this->redirectToRoute('MesListes');
+            return $this->redirectToRoute('MesListes');
         }
         $questions = $questionRepository->findAll();
 
@@ -290,7 +285,7 @@ class DefautController extends AbstractController
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        return $this->render('Defaut/Utilisateurs.html.twig', [
+        return $this->render('Defaut/Professeurs.html.twig', [
             'controller_name' => 'DefautController',
             'nom'=>$session->get('nom')." ".$session->get('prenom'),
             'professeurs'=>$professeurRepository->findAll()
