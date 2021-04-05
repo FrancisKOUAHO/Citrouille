@@ -18,6 +18,7 @@
         <td><input type="file" id="audio"> </td>
     </tr>
 </table>
+
 <input type="submit" onclick="" value="ok">
 <table id="motPris">
     {%  for question in questionsPrise %}
@@ -33,7 +34,7 @@
     {%  for question in questions %}
         <tr id="tr{{ question.id }}">
             <td><button onclick="move({{  question.id }})" type="button" >Changer</button></td>
-            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"</td>
+            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"></td>
         </tr>
     {% endfor %}
 </table>
