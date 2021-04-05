@@ -13,7 +13,7 @@ Prérequi
 
 Installation
 
-Après avoir cloné le projet avec git clone https://github.com/DimitriKft/myp_symfony.git
+Après avoir cloné le projet avec git clone https://github.com/Noari-Uchiha/Citrouille
 
 Exécutez la commande cd myp_symfony pour vous rendre dans le dossier depuis le terminal.
 
