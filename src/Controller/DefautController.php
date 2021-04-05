@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Liste;
 use App\Entity\Question;
 use App\Form\ListeType;
+use App\Repository\ListeRepository;
 use App\Repository\ProfesseurRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -239,11 +240,13 @@ class DefautController extends AbstractController
     /**
      * @Route("/DisplayListe", name="DisplayListe")
      */
-    public function DisplayListe(SessionInterface $session): Response
+    public function DisplayListe(SessionInterface $session, ListeRepository $listeRepository, ProfesseurRepository  $professeurRepository): Response
     {
+        $prof = $professeurRepository->find($session->get('idProf'));
         return $this->render('Defaut/DisplayListe.html.twig', [
             'controller_name' => 'DefautController',
-            'nom'=>$session->get('nom')." ".$session->get('prenom')
+            'nom'=>$session->get('nom')." ".$session->get('prenom'),
+            'listes'=>$listeRepository->findBy(['createur'=>$prof])
         ]);
     }
 
