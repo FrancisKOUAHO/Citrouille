@@ -350,7 +350,8 @@
                     <tr>
                         <td>{{ liste.nom }}</td>
                         <td>{{ liste.questions|length }}</td>
-                        <td><a href="{{ path('listeEdit', {"id": liste.id}) }}">aaaa</a></td>
+                        <td><a href="{{ path('listeEdit', {"id": liste.id}) }}"><img src="{{ asset('img/edit-2.png') }}"
+                                                                                     alt="download" width="40"></a></td>
                         <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
                                                                                  alt="download" width="40"></a></td>
                     </tr>
