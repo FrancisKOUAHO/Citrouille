@@ -9,8 +9,8 @@
     </div>
 
     {% for key, question in liste.questions %}
-        <input type="hidden" id="reponse{{ key }}" value="{{ question.reponse }}">
-        <div class="flex-card" id="div{{ key }}" style=" display: none">
+        <input type="hidden" id="reponse{{ ordre[key] }}" value="{{ question.reponse }}">
+        <div class="flex-card" id="div{{ ordre[key] }}" style=" display: none">
             {% if question.urlImage != null %}
                 <div class="card border-success mb-3 m-5" style="max-width: 20rem;">
                     <div class="card-header">
@@ -66,6 +66,8 @@
 
             if (inputValid.toLowerCase() === reponse.toLowerCase()) {
                 score++;
+                let verif = document.getElementById('verif').innerText = 'Cest la bonne reponse'
+
             } else {
                 let verif = document.getElementById('verif').innerText = 'Perdu !!! la bonne reponse est : ' + reponse
             }
