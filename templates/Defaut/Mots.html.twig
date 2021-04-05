@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -171,6 +171,7 @@
     }
 
 
+
     .clear {
         clear: both;
     }
@@ -240,14 +241,14 @@
 </svg>
 <header class="page-header">
     <nav>
-        <center>
-            <a href="#0" aria-label="forecastr logo" class="logo">
-                <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
-                <div>
-                    <span style="color: white">Cirouille</span>
-                </div>
-            </a>
-        </center>
+       <center>
+           <a href="#0" aria-label="forecastr logo" class="logo">
+               <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
+               <div>
+                   <span style="color: white">Cirouille</span>
+               </div>
+           </a>
+       </center>
         <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
             <svg width="20" height="20" aria-hidden="true">
                 <use xlink:href="#down"></use>
@@ -266,7 +267,7 @@
                 </a>
             </li>
             <li>
-                <a href="#0">
+                <a href="{{ path('DisplayListe') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
@@ -281,6 +282,7 @@
                     <span>Edit Mots</span>
                 </a>
             </li>
+
             <li>
                 <a href="{{ path('Utilisateur') }}">
                     <svg>
@@ -289,6 +291,7 @@
                     <span>Utilisateur</span>
                 </a>
             </li>
+
             <li>
                 <div class="switch">
                     <input type="checkbox" id="mode" checked>
@@ -328,29 +331,28 @@
         </div>
     </section>
     <section class="grid">
-        <article>
+        <div id="create">
 
-            <table class="container">
-                <thead>
-                <tr>
-                    <th><h1>Nom</h1></th>
-                    <th><h1>Nombre questions</h1></th>
-                    <th><h1>Modifier</h1></th>
-                    <th><h1>Exporter</h1></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for liste in listes %}
-                    <tr>
-                        <td>{{ liste.nom }}</td>
-                        <td>{{ liste.questions|length }}</td>
-                        <td>2</td>
-                        <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
-                                                                                 alt="download" width="40"></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        </div>
+        <article>
+            <div style="margin-top: 11%; margin-left: 28%;">
+                <div id="area">
+                    <button class="download-button" style="background-color: #25c482;;">Exporter</button>
+                    <button class="import-button">Importer</button>
+                    <p>or</p>
+                </div>
+                <div class="clear"></div>
+                <p>
+                    <br>
+
+                <center>
+                    <label for="terms">
+                        Je ne suis pas d'accord avec Citrouille
+                    </label>
+                </center>
+
+                </p>
+            </div>
         </article>
     </section>
 </section>

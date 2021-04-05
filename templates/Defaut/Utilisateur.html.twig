@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -171,6 +171,7 @@
     }
 
 
+
     .clear {
         clear: both;
     }
@@ -240,14 +241,14 @@
 </svg>
 <header class="page-header">
     <nav>
-        <center>
-            <a href="#0" aria-label="forecastr logo" class="logo">
-                <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
-                <div>
-                    <span style="color: white">Cirouille</span>
-                </div>
-            </a>
-        </center>
+       <center>
+           <a href="#0" aria-label="forecastr logo" class="logo">
+               <img src="{{ asset('img/jack-o-lantern--v1.png') }}" alt="citrouille" width="50">
+               <div>
+                   <span style="color: white">Cirouille</span>
+               </div>
+           </a>
+       </center>
         <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
             <svg width="20" height="20" aria-hidden="true">
                 <use xlink:href="#down"></use>
@@ -266,7 +267,7 @@
                 </a>
             </li>
             <li>
-                <a href="#0">
+                <a href="{{ path('DisplayListe') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
@@ -333,22 +334,25 @@
             <table class="container">
                 <thead>
                 <tr>
-                    <th><h1>Nom</h1></th>
-                    <th><h1>Nombre questions</h1></th>
-                    <th><h1>Modifier</h1></th>
-                    <th><h1>Exporter</h1></th>
+                    <th><h1>Utilisateur</h1></th>
+                    <th><h1>Classe</h1></th>
+                    <th><h1>Niveau</h1></th>
+                    <th><h1>Score</h1></th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for liste in listes %}
-                    <tr>
-                        <td>{{ liste.nom }}</td>
-                        <td>{{ liste.questions|length }}</td>
-                        <td>2</td>
-                        <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
-                                                                                 alt="download" width="40"></a></td>
-                    </tr>
-                {% endfor %}
+                <tr>
+                    <td>Francis</td>
+                    <td>CM2</td>
+                    <td>2</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>Noah</td>
+                    <td>CP</td>
+                    <td>4</td>
+                    <td>6</td>
+                </tr>
                 </tbody>
             </table>
         </article>

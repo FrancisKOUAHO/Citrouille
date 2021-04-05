@@ -251,4 +251,27 @@ class DefautController extends AbstractController
     }
 
 
+    /**
+     * @Route("/Utilisateur", name="Utilisateur")
+     */
+    public function Utilisateur(SessionInterface $session): Response
+    {
+        return $this->render('Defaut/Utilisateur.html.twig', [
+            'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom'),
+        ]);
+    }
+
+    /**
+     * @Route("/Mots", name="Mots")
+     */
+    public function Mots(SessionInterface $session): Response
+    {
+        return $this->render('Defaut/Mots.html.twig', [
+            'controller_name' => 'DefautController',
+            'nom'=>$session->get('nom')." ".$session->get('prenom'),
+        ]);
+    }
+
+
 }
