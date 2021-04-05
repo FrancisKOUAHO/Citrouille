@@ -8,19 +8,8 @@
         <center><h4 class="alert-heading" id="verif"></h4></center>
     </div>
 
-    <center>
-        <div class="progress placement-top w-50">
-            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 25%;"
-                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-            </div>
-        </div>
-        <div style="margin-left: 55%; margin-top: -1.5%;">
-            <span class="badge badge-primary badge-pill"> 10% </span>
-        </div>
-    </center>
-
     {% for key, question in liste.questions %}
-        <input type="hidden" id="reponse{{ key }}">
+        <input type="hidden" id="reponse{{ key }}" value="{{ question.reponse }}">
         <div class="flex-card" id="div{{ key }}" style=" display: none">
             {% if question.urlImage != null %}
                 <div class="card border-success mb-3 m-5" style="max-width: 20rem;">
@@ -42,7 +31,9 @@
                     <div class="card-body">
                         <center><h4 class="card-title">????????????</h4></center>
                         <audio src="{{ asset(question.urlAudio) }}" alt="Audio"
-                               width="250">
+                               width="250"
+                               controls
+                        >
                         </audio>
                     </div>
                 </div>
@@ -52,13 +43,13 @@
     {% endfor %}
 
     <center>
-        <div style="display: flex; margin-left: 42%">
+        <div style="display: flex; margin-left: 42%" id="divreponse">
             <div class="form-group has-success" style="width: 31%; margin-top: -2%;">
                 <label class="form-control-label" for="inputValid">Reponse ?</label>
-                <input type="text" value="Reponse ?" class="form-control is-valid" id="inputValid">
+                <input type="text" value="" class="form-control is-valid" id="inputValid">
                 <br>
                 <div>
-                    <button type="button" class="btn btn-outline-success">Valider</button>
+                    <button type="button" onclick="valider()" class="btn btn-outline-success">Valider</button>
                 </div>
             </div>
         </div>
@@ -69,8 +60,9 @@
         let score = 0;
 
         function valider() {
+
             let inputValid = document.getElementById('inputValid').value;
-            let reponse = document.getElementById('reponse' + i);
+            let reponse = document.getElementById('reponse' + i).value;
 
             if (inputValid.toLowerCase() === reponse.toLowerCase()) {
                 score++;
@@ -83,7 +75,8 @@
             if (i < {{ liste.questions|length }}) {
                 document.getElementById('div' + i).style.display = 'flex'
             } else {
-                document.getElementById('verif').innerText = 'Perdu !!! la bonne reponse est : ' + reponse
+                document.getElementById('verif').innerText = 'Votre score est de : '+ score + '/{{ liste.questions|length }}'
+                document.getElementById('divreponse').style.display = 'none'
             }
         }
 

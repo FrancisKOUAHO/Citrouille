@@ -336,29 +336,29 @@
         </div>
     </section>
     <section class="grid">
-         <table class="container" style="width: 205%;">
-                <thead>
+        <table class="container" style="width: 205%;">
+            <thead>
+            <tr>
+                <th><h1>Nom</h1></th>
+                <th><h1>Nombre questions</h1></th>
+                <th><h1>Modifier</h1></th>
+                <th><h1>Exporter</h1></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for liste in listes %}
                 <tr>
-                    <th><h1>Nom</h1></th>
-                    <th><h1>Nombre questions</h1></th>
-                    <th><h1>Modifier</h1></th>
-                    <th><h1>Exporter</h1></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for liste in listes %}
-                    <tr>
-                        <td>{{ liste.nom }}</td>
-                        <td>{{ liste.questions|length }}</td>
-                        <td><a href="{{ path('listeEdit', {"id": liste.id}) }}"><img src="{{ asset('img/edit-2.png') }}"
-                                                                                     alt="download" width="40"></a></td>
-                        <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
+                    <td><a href="{{ path('liste', {"id": liste.id}) }}">{{ liste.nom }}</a></td>
+                    <td>{{ liste.questions|length }}</td>
+                    <td><a href="{{ path('listeEdit', {"id": liste.id}) }}"><img src="{{ asset('img/edit-2.png') }}"
                                                                                  alt="download" width="40"></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        <article >
+                    <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
+                                                                             alt="download" width="40"></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <article>
             <div style="margin-top: 10%; margin-left: 40%">
                 <form action="{{ path('import') }}" method="post" enctype="multipart/form-data">
                     <article>
