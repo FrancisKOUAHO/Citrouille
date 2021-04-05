@@ -12,10 +12,10 @@ const lightModeClass = "light-mode";
 /*TOGGLE HEADER STATE*/
 collapseBtn.addEventListener("click", function () {
     body.classList.toggle(collapsedClass);
-    this.getAttribute("aria-expanded") == "true"
+    this.getAttribute("aria-expanded") === "true"
         ? this.setAttribute("aria-expanded", "false")
         : this.setAttribute("aria-expanded", "true");
-    this.getAttribute("aria-label") == "collapse menu"
+    this.getAttribute("aria-label") === "collapse menu"
         ? this.setAttribute("aria-label", "expand menu")
         : this.setAttribute("aria-label", "collapse menu");
 });
@@ -23,10 +23,10 @@ collapseBtn.addEventListener("click", function () {
 /*TOGGLE MOBILE MENU*/
 toggleMobileMenu.addEventListener("click", function () {
     body.classList.toggle("mob-menu-opened");
-    this.getAttribute("aria-expanded") == "true"
+    this.getAttribute("aria-expanded") === "true"
         ? this.setAttribute("aria-expanded", "false")
         : this.setAttribute("aria-expanded", "true");
-    this.getAttribute("aria-label") == "open menu"
+    this.getAttribute("aria-label") === "open menu"
         ? this.setAttribute("aria-label", "close menu")
         : this.setAttribute("aria-label", "open menu");
 });

@@ -1,7 +1,5 @@
-{{ form_start(formListe, {'attr':{'id':'formListe', 'enctype':"multipart/form-data"}, 'action':path('listeCreate') }) }}
-{{ form_row (formListe.nom)}}
-<input type="hidden" id="nbQuestions" name="nbQuestions">
-<input type="hidden" id="nbQuestionsAncienne" name="nbQuestionsAncienne">
+{{ form_start(formListe, {'attr':{'id':'formListe'}, 'action':path('listeCreate') }) }}
+<input type="hidden" name="nbQuestions">
 <table id="tableQuestions">
     <tr>
         <th>Réponse</th>
@@ -18,26 +16,10 @@
         <td><input type="file" id="audio"> </td>
     </tr>
 </table>
-<input type="submit" onclick="" value="ok">
-<table id="motPris">
-    {%  for question in questionsPrise %}
-        <tr id="tr{{ question.id }}">
-            <td><button onclick="move({{  question.id }})" type="button" >Changer</button></td>
-            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"></td>
-        </tr>
-    {% endfor %}
-</table>
 
 {{ form_end(formListe) }}
-<table id="motLibre">
-    {%  for question in questions %}
-        <tr id="tr{{ question.id }}">
-            <td><button onclick="move({{  question.id }})" type="button" >Changer</button></td>
-            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"</td>
-        </tr>
-    {% endfor %}
-</table>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
 <script>
     var i=0;
     function addQuestion(){
@@ -48,25 +30,6 @@
         tr.find('#audio').attr('name',"question"+i+"[audio]");
         tr.appendTo('#tableQuestions');
         i++;
-        $('#nbQuestions').val(i);
+        $('#nbQuestions').val(i)
     }
-
-    function move(id){
-        var tr = $('#tr'+id);
-        //var src =  $('#img'+id).attr('src');
-
-        $('#tr'+id+' td:first-child').appendTo(tr);
-
-        if(tr.parent().parent().attr('id')=== 'motLibre'){
-            tr.appendTo('#motPris');
-            //$('#img'+id).attr('src',src.replaceAll('left','right'));
-        }
-        else if(tr.parent().parent().attr('id')=== 'motPris'){
-            tr.appendTo('#motLibre');
-            //$('#img'+id).attr('src',src.replaceAll('right','left'));
-        }
-
-
-    }
-    
 </script>
