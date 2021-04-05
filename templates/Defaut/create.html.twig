@@ -1,73 +1,132 @@
-{{ form_start(formListe, {'attr':{'id':'formListe', 'enctype':"multipart/form-data"}, 'action':path('listeCreate') }) }}
-{{ form_row (formListe.nom)}}
-<input type="hidden" id="nbQuestions" name="nbQuestions">
-<input type="hidden" id="nbQuestionsAncienne" name="nbQuestionsAncienne">
-<table id="tableQuestions">
-    <tr>
-        <th>Réponse</th>
-        <th>Image</th>
-        <th>Audio</th>
-    </tr>
-    <tr>
-        <td colspan="2"><button type="button" onclick="addQuestion()">Ajouter une question</button>
-        </td>
-    </tr>
-    <tr id="copy" style="display: none">
-        <td><input type="text" id="reponse"></td>
-        <td><input type="file" id="image"> </td>
-        <td><input type="file" id="audio"> </td>
-    </tr>
-</table>
-
-<input type="submit" onclick="" value="ok">
-<table id="motPris">
-    {%  for question in questionsPrise %}
-        <tr id="tr{{ question.id }}">
-            <td><button onclick="move({{  question.id }})" type="button" >Changer</button></td>
-            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"></td>
+<article>
+    {{ form_start(formListe, {'attr':{'id':'formListe', 'enctype':"multipart/form-data"}, 'action':path('listeCreate') }) }}
+    {{ form_row (formListe.nom, {'attr': {'class': 'myInput'}}) }}
+    <input type="hidden" id="nbQuestions" name="nbQuestions">
+    <input type="hidden" id="nbQuestionsAncienne" name="nbQuestionsAncienne">
+    <table id="tableQuestions" class="container" style="width:    150% !important;">
+        <tr>
+            <th>Réponse</th>
+            <th>Image</th>
+            <th>Audio</th>
         </tr>
-    {% endfor %}
-</table>
-
-{{ form_end(formListe) }}
-<table id="motLibre">
-    {%  for question in questions %}
-        <tr id="tr{{ question.id }}">
-            <td><button onclick="move({{  question.id }})" type="button" >Changer</button></td>
-            <td>{{ question.reponse }}<input type="hidden" name="q[]" value="{{ question.id }}"></td>
+        <tr>
+            <td colspan="3">
+                <button type="button" onclick="addQuestion()" class="text-form">Ajouter une question</button>
+            </td>
         </tr>
-    {% endfor %}
-</table>
+        <tr id="copy" style="display: none">
+            <td><input type="text" id="reponse"></td>
+            <td><input type="file" id="image"></td>
+            <td><input type="file" id="audio"></td>
+        </tr>
+    </table>
+
+    <div style="margin-left: 160%; margin-top: -38%;">
+        <button type="submit" class="button-success pure-button">Valider</button>
+    </div>
+
+    <div style="margin-top: 20%">
+        <input type="text" class="myInput" id="myInput" onkeyup="searchWord()" placeholder="Rechercher des mots...">
+    </div>
+
+    <table id="motPris" class="container" style="margin-top: 19%; width: 151%;">
+        {% for question in questionsPrise %}
+            <tr id="tr{{ question.id }}" class="text-form tr">
+                <td >
+                    <button onclick="move({{ question.id }})" type="button"><img
+                                src="{{ asset('img/left-arrow.png') }}" alt="fleche" width="40" id="img{{ question.id }}"></button>
+                </td>
+                <td id="td"><a>{{ question.reponse }}</a><input type="hidden" name="q[]" value="{{ question.id }}" class="text-form">
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <table id="motLibre" class="container" style="width: 150%;">
+        {% for question in questions %}
+            <tr id="tr{{ question.id }}" class="tr">
+                <td>
+                    <button onclick="move({{ question.id }})" type="button"><img
+                                src="{{ asset('img/right-arrow.png') }}" alt="fleche" width="40" id="img{{ question.id }}"></button>
+                </td>
+                <td><a>{{ question.reponse }}</a><input type="hidden" name="q[]" value="{{ question.id }}"></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {{ form_end(formListe) }}
+</article>
+
+<article>
+
+</article>
+
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    var i=0;
-    function addQuestion(){
+    var i = 0;
+
+    function addQuestion() {
         var tr = $('#copy').clone();
         tr.show();
-        tr.find('#reponse').attr('name',"question"+i+"[reponse]");
-        tr.find('#image').attr('name',"question"+i+"[image]");
-        tr.find('#audio').attr('name',"question"+i+"[audio]");
+        tr.find('#reponse').attr('name', "question" + i + "[reponse]");
+        tr.find('#image').attr('name', "question" + i + "[image]");
+        tr.find('#audio').attr('name', "question" + i + "[audio]");
         tr.appendTo('#tableQuestions');
         i++;
         $('#nbQuestions').val(i);
     }
 
-    function move(id){
-        var tr = $('#tr'+id);
-        //var src =  $('#img'+id).attr('src');
+    function move(id) {
+        var tr = $('#tr' + id);
+        var src =  $('#img'+id).attr('src');
 
-        $('#tr'+id+' td:first-child').appendTo(tr);
+        //$('#tr' + id + ' td:first-child').appendTo(tr);
 
-        if(tr.parent().parent().attr('id')=== 'motLibre'){
+        if (tr.parent().parent().attr('id') === 'motLibre') {
             tr.appendTo('#motPris');
-            //$('#img'+id).attr('src',src.replaceAll('left','right'));
-        }
-        else if(tr.parent().parent().attr('id')=== 'motPris'){
+            $('#img'+id).attr('src',src.replaceAll('left','right'));
+        } else if (tr.parent().parent().attr('id') === 'motPris') {
             tr.appendTo('#motLibre');
-            //$('#img'+id).attr('src',src.replaceAll('right','left'));
+            $('#img'+id).attr('src',src.replaceAll('right','left'));
         }
+    }
 
+    function searchWord() {
+        // Declare variables
+        var input, filter, tr, td, a, i, txtValue;
+        input = document.getElementById('myInput');
+        filter = input.value.toUpperCase();
+        tr = document.getElementsByClassName("tr");
+        td = tr.getElementById('td');
 
     }
-    
+
 </script>
+
+<style>
+    .button-success {
+        color: white;
+        border-radius: 4px;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        width: 250px;
+        height: 50px;
+    }
+
+    .button-success {
+        background: #26c481;
+
+    }
+
+    .text-form {
+        font-size: 20px
+    }
+    .myInput {
+        background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+        background-position: 10px 12px; /* Position the search icon */
+        background-repeat: no-repeat; /* Do not repeat the icon image */
+        width: 100%; /* Full-width */
+        font-size: 16px; /* Increase font-size */
+        padding: 12px 20px 12px 40px; /* Add some padding */
+        border: 1px solid #ddd; /* Add a grey border */
+        margin-bottom: 12px; /* Add some space below the input */
+    }
+</style>
