@@ -25,9 +25,14 @@ class DefautController extends AbstractController
      */
     public function index(Liste $liste): Response
     {
+        $ordre =[];
+        for($i=0; $i<count($liste->getQuestions()); $i++){
+            $ordre[]=$i;
+        }
         return $this->render('Defaut/Liste.html.twig', [
             'controller_name' => 'DefautController',
-            'liste'=>$liste
+            'liste'=>$liste,
+            'ordre'=>shuffle($ordre)
         ]);
     }
 
