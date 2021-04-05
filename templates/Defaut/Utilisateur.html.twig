@@ -271,7 +271,15 @@
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Liste</span>
+                    <span>Mes listes</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('listeCreate') }}">
+                    <svg>
+                        <use xlink:href="#users"></use>
+                    </svg>
+                    <span>Nouvelle liste</span>
                 </a>
             </li>
             <li>
@@ -279,15 +287,15 @@
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Edit Mots</span>
+                    <span>Liste de mots</span>
                 </a>
             </li>
             <li>
-                <a href="{{ path('Utilisateur') }}">
+                <a href="{{ path('Professeurs') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Utilisateur</span>
+                    <span>Professeur</span>
                 </a>
             </li>
             <li>
@@ -330,31 +338,22 @@
     </section>
     <section class="grid">
         <article>
-
-            <table class="container">
-                <thead>
-                <tr>
-                    <th><h1>Utilisateur</h1></th>
-                    <th><h1>Classe</h1></th>
-                    <th><h1>Niveau</h1></th>
-                    <th><h1>Score</h1></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Francis</td>
-                    <td>CM2</td>
-                    <td>2</td>
-                    <td>4</td>
-                </tr>
-                <tr>
-                    <td>Noah</td>
-                    <td>CP</td>
-                    <td>4</td>
-                    <td>6</td>
-                </tr>
-                </tbody>
-            </table>
+            <article>
+                <table class="container" style="width: 100%">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Nombre de liste</th>
+                    </tr>
+                    {% for professeur in professeurs %}
+                        <tr>
+                            <td>{{ professeur.nom }}</td>
+                            <td>{{ professeur.prenom }}</td>
+                            <td>{{ professeur.listes|length }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </article>
         </article>
     </section>
 </section>

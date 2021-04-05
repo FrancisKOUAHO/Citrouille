@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-    <link rel="icon"  href="{{ asset('img/jack-o-lantern--v1.png') }}" />
+    <link rel="icon" href="{{ asset('img/jack-o-lantern--v1.png') }}"/>
     <title>Dashboard</title>
 </head>
 <body>
@@ -266,11 +266,19 @@
                 </a>
             </li>
             <li>
-                <a href="#0">
+                <a href="{{ path('DisplayListe') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Liste</span>
+                    <span>Mes listes</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('listeCreate') }}">
+                    <svg>
+                        <use xlink:href="#users"></use>
+                    </svg>
+                    <span>Nouvelle liste</span>
                 </a>
             </li>
             <li>
@@ -278,15 +286,15 @@
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Edit Mots</span>
+                    <span>Liste de mots</span>
                 </a>
             </li>
             <li>
-                <a href="{{ path('Utilisateur') }}">
+                <a href="{{ path('Professeurs') }}">
                     <svg>
                         <use xlink:href="#users"></use>
                     </svg>
-                    <span>Utilisateur</span>
+                    <span>Professeur</span>
                 </a>
             </li>
             <li>
@@ -344,7 +352,7 @@
                     <tr>
                         <td>{{ liste.nom }}</td>
                         <td>{{ liste.questions|length }}</td>
-                        <td>2</td>
+                        <td><a href="{{ path('listeEdit', {"id": liste.id}) }}">aaaa</a></td>
                         <td><a href="{{ path('export', {'id':liste.id}) }}"><img src="{{ asset('img/download.png') }}"
                                                                                  alt="download" width="40"></a></td>
                     </tr>
@@ -352,6 +360,18 @@
                 </tbody>
             </table>
         </article>
+        <form action="{{ path('import') }}" method="post" enctype="multipart/form-data">
+            <article>
+                <div class="input-file-container">
+                    <input class="input-file" id="my-file" type="file" accept=".zip">
+                    <label for="my-file" class="input-file-trigger" tabindex="0">
+                        Selectionner un ficher...
+                    </label>
+                </div>
+                <p class="file-return"></p>
+            </article>
+        </form>
+
     </section>
 </section>
 

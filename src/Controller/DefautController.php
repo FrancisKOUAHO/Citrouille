@@ -133,7 +133,7 @@ class DefautController extends AbstractController
         $questions = $questionRepository->findAll();
 
 
-        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId()]);
+        return $this->render('Defaut/create.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
     }
 
     /**
