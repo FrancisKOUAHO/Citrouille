@@ -336,9 +336,7 @@
         </div>
     </section>
     <section class="grid">
-        <article>
-
-            <table class="container">
+         <table class="container" style="width: 205%;">
                 <thead>
                 <tr>
                     <th><h1>Nom</h1></th>
@@ -359,19 +357,21 @@
                 {% endfor %}
                 </tbody>
             </table>
+        <article >
+            <div style="margin-top: 10%; margin-left: 40%">
+                <form action="{{ path('import') }}" method="post" enctype="multipart/form-data">
+                    <article>
+                        <div class="input-file-container">
+                            <input class="input-file" id="my-file" type="file" accept=".zip">
+                            <label for="my-file" class="input-file-trigger" tabindex="0">
+                                Selectionner un ficher...
+                            </label>
+                        </div>
+                        <p class="file-return"></p>
+                    </article>
+                </form>
+            </div>
         </article>
-        <form action="{{ path('import') }}" method="post" enctype="multipart/form-data">
-            <article>
-                <div class="input-file-container">
-                    <input class="input-file" id="my-file" type="file" accept=".zip">
-                    <label for="my-file" class="input-file-trigger" tabindex="0">
-                        Selectionner un ficher...
-                    </label>
-                </div>
-                <p class="file-return"></p>
-            </article>
-        </form>
-
     </section>
 </section>
 

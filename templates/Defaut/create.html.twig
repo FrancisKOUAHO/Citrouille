@@ -389,8 +389,10 @@
     </section>
     <section class="grid">
         <article>
+
             {{ form_start(formListe, {'attr':{'id':'formListe', 'enctype':"multipart/form-data"}, 'action':path('listeCreate') }) }}
             {{ form_row (formListe.nom, {'attr': {'class': 'myInput'}}) }}
+
             <input type="hidden" id="nbQuestions" name="nbQuestions">
             <input type="hidden" id="nbQuestionsAncienne" name="nbQuestionsAncienne">
             <table id="tableQuestions" class="container" style="width:    150% !important;">
@@ -411,13 +413,12 @@
                 </tr>
             </table>
 
-            <div style="margin-left: 160%; margin-top: -38%;">
+            <div style="margin-left: 500px; margin-top: 0%;">
                 <button type="submit" class="button-success pure-button">Valider</button>
             </div>
 
 
-
-            <table id="motPris" class="container" style="margin-top: 19%; width: 151%;">
+            <table id="motPris" class="container" style="margin-top: 52%; width: 151%;">
                 {% for question in questionsPrise %}
                     <tr id="tr{{ question.id }}" class="text-form tr">
                         <td >
@@ -433,7 +434,7 @@
         </article>
         <div>
             <article>
-                <div style="margin-top: 20%">
+                <div style="width: 150%; margin-top: 20%;">
                     <input type="text" class="myInput" id="myInput" onkeyup="searchWord()" placeholder="Rechercher des mots...">
                 </div>
                 <table id="motLibre" class="container" style="width: 150%;">
