@@ -87,10 +87,10 @@ class DefautController extends AbstractController
                     $question->setReponse($questionform["reponse"]);
                     $manager->persist($question);
                     $manager->flush();
+                    $id = strtotime('now');
                     if (isset($questionfiles["image"])) {
                         $image = $questionfiles['image'];
-
-                        $nom = $question->getId()."." . $image->guessExtension();
+                        $nom = $id."." . $image->guessExtension();
                         try {
                             $image->move(
                                'uploads/images/',
@@ -103,7 +103,7 @@ class DefautController extends AbstractController
                     }
                     if (isset($questionfiles["audio"])) {
                         $audio = $questionfiles['audio'];
-                        $nom =  $question->getId()."."  . $audio->guessExtension();
+                        $nom =  $id."."  . $audio->guessExtension();
                         try {
                             $audio->move(
                                 'uploads/audios/',
@@ -135,73 +135,83 @@ class DefautController extends AbstractController
     }
 
     /**
-     * @Route("/liste/export/{id}", name="export")
+     * @Route("/export/liste/{id}", name="export")
      */
-    public function exportListe(Liste $liste,ZipArchive $zip): Response
+    public function exportListe(Liste $liste): Response
     {
-        $text = "{ 'nom':'".$liste->getNom()."', 'questions':{";
+        $text = '{ "nom":"'.$liste->getNom().'", "questions":[';
+        $zipArchive = new ZipArchive();
+        $time=strtotime('now');
+        $zipArchive->open($liste->getNom()."$time.zip", ZipArchive::CREATE);
 
-        $zip->open($liste->getNom().".zip", ZipArchive::CREATE);
-        foreach ($liste->getQuestions() as $question){
-            $text.= "{'reponse':'".$question->getReponse()."', 'urlImage':'".$question->getUrlImage()."', 'urlAudio':'".$question->getUrlAudio()."'}";
-
-            $zip->addFile($this->getParameter('uploads_dir') .$question->getUrlImage());
-            $zip->addFile($this->getParameter('uploads_dir') .$question->getUrlImage());
+        foreach ($liste->getQuestions() as $key=>$question){
+            $text.= '{"reponse":"'.$question->getReponse().'", "urlImage":"'.$question->getUrlImage().'", "urlAudio":"'.$question->getUrlAudio().'"}';
+            if($key<count($liste->getQuestions())-1)
+                $text.=',';
+            $name = explode('/', $question->getUrlImage());
+            $zipArchive->addFile($question->getUrlImage(), 'images/'.$name[count($name)-1]);
+            $name = explode('/', $question->getUrlAudio());
+            $zipArchive->addFile($question->getUrlAudio(), 'audios/'.$name[count($name)-1]);
 
         }
-        $text.='}';
+        $text.=']}';
+        $zipArchive->addFromString('export.json', $text);
+        $zipArchive->close();
 
-        /*header("Content-type: application/$extension");
-        header("Content-Disposition: attachment; filename=" . $video->getTitre().".".$extension);
+        header("Content-type: application/zip");
+        header("Content-Disposition: attachment; filename=export_".$liste->getNom().".zip");
         header("Pragma: no-cache");
         header("Expires: 0");
-        readfile($this->getParameter('uploads_dir') . $video->getFilename());*/
+        readfile($liste->getNom()."$time.zip");
+        unlink($liste->getNom()."$time.zip");
 
         die();
     }
     /**
-     * @Route("/liste/import", name="import")
+     * @Route("import/liste", name="import")
      */
-    public function importListe(Request $request, ZipArchive $zipArchive,SessionInterface $session,EntityManagerInterface $manager): Response
+    public function importListe(Request $request, SessionInterface $session,EntityManagerInterface $manager, ProfesseurRepository $professeurRepository): Response
     {
-        $zipUrl = $request->files->get('video')['fichier'];
-        $zip =$zipArchive->open($zipUrl);
+        $zipUrl = $request->files->get('file');
 
-        while ($zip_entry = zip_read($zip)) {
-            switch (zip_entry_name($zip_entry)){
-                case "export.txt":
-                    if (zip_entry_open($zip, $zip_entry, "r")) {
-                        $data = json_decode(zip_entry_read($zip_entry, zip_entry_filesize($zip_entry)));
-                        $liste = new Liste();
-                        $liste->setDateCreation(strtotime('now'))
-                            ->setNom($data['nom'])
-                            ->setVisibilite(0)
-                            ->setCreateur($session->get('idProf'));
-                            $manager->persist($liste);
-                            $manager->flush();
-                        foreach ($data['questions'] as $q){
-                            $question = new Question();
-                            $question->setReponse($q['reponse'])
-                                ->setUrlAudio($q['urlAudio'])
-                                ->setUrlImage($q['urlImage']);
-                            $manager->persist($question);
-                            $liste->addQuestion($question);
-                        }
-                        $manager->persist($liste);
-                        $manager->flush();
-                        zip_entry_close($zip_entry);
-                    }
-                    break;
-                case "images":
+        if($zipUrl) {
+            $zip = new ZipArchive;
+            $zip->open($zipUrl);
+            $zip->extractTo('uploads/');
 
-                    break;
-                case "audios":
-                break;
+            $res =file_get_contents('uploads/export.json', true);
+            $data = json_decode($res);
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>';
+
+
+            $liste = new Liste();
+            $liste->setDateCreation(strtotime('now'))
+                ->setNom($data->nom)
+                ->setVisibilite(0)
+                ->setCreateur($professeurRepository->find($session->get('idProf')));
+                $manager->persist($liste);
+                $manager->flush();
+            foreach ($data->questions as $q){
+                $question = new Question();
+                $question->setReponse($q->reponse)
+                    ->setUrlAudio($q->urlAudio)
+                    ->setUrlImage($q->urlImage);
+                $manager->persist($question);
+                $liste->addQuestion($question);
             }
+            $manager->persist($liste);
+            $manager->flush();
+            unlink('uploads/export.txt');
+            $zip->close();
 
+            echo "ok";
+            die();
         }
-
-        die();
+        return $this->render('Defaut/import.html.twig', [
+            'controller_name' => 'DefautController',
+        ]);
     }
 
     /**
