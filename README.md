@@ -8,8 +8,6 @@ Prérequi
     MySQL Installer MySQL ou Installer MariaDB
     Symfony version 5.0 minimum avec le CLI(Binaire) Symfony Installer Symfony -- Installer Binaire Symfony
     Composer Installer Composer
-    Npm Installer Npm
-    Yarn Installer Yarn
 
 Installation
 
