@@ -64,12 +64,13 @@ class DefautController extends AbstractController
      * @Route("create/liste", name="listeCreate")
      * @Route("edit/liste/{id}", name="listeEdit")
      */
-    public function createList(Liste $liste=null,SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository, ProfesseurRepository $professeurRepository): Response
+    public function createList(Liste $liste=null,SessionInterface $session, EntityManagerInterface $manager, Request $request, QuestionRepository $questionRepository, ProfesseurRepository $professeurRepository, ListeRepository $listeRepository): Response
     {
         if ($session->get('idProf') == null) {
             return $this->redirectToRoute('login');
         }
-        if (!$liste) {
+        $edit=$liste==null?'non':'oui';
+        if ($liste==null) {
             $liste = new Liste();
         }
 
@@ -81,6 +82,7 @@ class DefautController extends AbstractController
         $formListe->handleRequest($request);
         if ($formListe->isSubmitted()) {
             if ($formListe->isValid()) {
+                echo 'avant:'.count($listeRepository->findAll());
                 if ($liste->getId() == null) {
                     $liste->setDateCreation(strtotime('now'))
                     ->setCreateur($professeurRepository->find($session->get('idProf')))
@@ -88,8 +90,6 @@ class DefautController extends AbstractController
                     $manager->persist($liste);
                     $manager->flush();
                 }
-
-
                 $nb = $request->request->get('nbQuestions');
                 for ($i = 0; $i < $nb; $i++) {
                     $questionform = $request->request->get("question$i");
@@ -110,7 +110,7 @@ class DefautController extends AbstractController
                                 );
                                 $question->setUrlImage("uploads/images/$nom");
                             } catch (FileException $e) {
-                                return 'error image';
+                                echo 'error image';
                             }
                         }
                         if (isset($questionfiles["audio"])) {
@@ -123,12 +123,13 @@ class DefautController extends AbstractController
                                 );
                                 $question->setUrlAudio("uploads/audios/$nom");
                             } catch (FileException $e) {
-                                return 'error image';
+                                echo 'error audio';
                             }
                         }
                         $manager->persist($question);
                         $liste->addQuestion($question);
                         $manager->persist($liste);
+
                     }
                 }
                 $q = $request->request->get('q');
@@ -148,13 +149,14 @@ class DefautController extends AbstractController
                 $manager->persist($liste);
                 $manager->flush();
 
+
             }
             return $this->redirectToRoute('MesListes');
         }
         $questions = $questionRepository->findAll();
 
 
-        return $this->render('Defaut/CreateModifListe.html.twig', ['formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
+        return $this->render('Defaut/CreateModifListe.html.twig', ['edit'=>$edit,'formListe' => $formListe->createView(), 'questions'=>$questions, 'questionsPrise'=>$liste->getQuestions(), 'id'=>$liste->getId(), 'nom'=>$session->get('nom')." ".$session->get('prenom')] );
     }
 
     /**
